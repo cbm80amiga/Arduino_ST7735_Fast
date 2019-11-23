@@ -497,7 +497,7 @@ uint16_t Arduino_ST7735::Color565(uint8_t r, uint8_t g, uint8_t b)
 // ----------------------------------------------------------
 void Arduino_ST7735::invertDisplay(boolean mode) 
 {
-  writeCmd(!mode ? ST7735_INVON : ST7735_INVOFF);  // modes inverted?
+  writeCmd(mode ? ST7735_INVON : ST7735_INVOFF);
 }
 
 // ----------------------------------------------------------
@@ -535,8 +535,8 @@ void Arduino_ST7735::resetDisplay()
 // ----------------------------------------------------------
 void Arduino_ST7735::setScrollArea(uint16_t tfa, uint16_t bfa) 
 {
-  uint16_t vsa = 320-tfa-bfa; // ST7735 320x240 VRAM
-  writeCmd(ST7735_VSCRDEF); // SETSCROLLAREA = 0x33
+  uint16_t vsa = 160-tfa-bfa;
+  writeCmd(ST7735_VSCRDEF);
   writeData(tfa >> 8); writeData(tfa);
   writeData(vsa >> 8); writeData(vsa);
   writeData(bfa >> 8); writeData(bfa);
@@ -545,14 +545,14 @@ void Arduino_ST7735::setScrollArea(uint16_t tfa, uint16_t bfa)
 // ----------------------------------------------------------
 void Arduino_ST7735::setScroll(uint16_t vsp) 
 {
-  writeCmd(ST7735_VSCRSADD); // VSCRSADD = 0x37
+  writeCmd(ST7735_VSCRSADD);
   writeData(vsp >> 8); writeData(vsp);
 }
 
 // ----------------------------------------------------------
 void Arduino_ST7735::setPartArea(uint16_t sr, uint16_t er) 
 {
-  writeCmd(ST7735_PTLAR);  // SETPARTAREA = 0x30
+  writeCmd(ST7735_PTLAR);
   writeData(sr >> 8); writeData(sr);
   writeData(er >> 8); writeData(er);
 }
