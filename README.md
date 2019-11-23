@@ -2,7 +2,9 @@
 Fast ST7735 1.8" 128x160 LCD SPI display library
 
 YouTube videos:
+
 https://youtu.be/V1KBm99Qagw
+
 https://youtu.be/KwtkfmglT-c
 
 Significantly optimized for 16MHz AVR Arduino boards (2-6x faster than other available libraries)
