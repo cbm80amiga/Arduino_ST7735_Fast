@@ -66,7 +66,28 @@ unsigned long ClearScreenTest()
   return millis()-start;
 }
 // ------------------------------------------------
-
+const uint16_t imgF[] PROGMEM = {0xF800,0xF840,0xF8A0,0xF900,0xF960,0xF9C0,0xFA20,0xFA80,0xFAE0,0xFB40,0xFBA0,0xFC00,0xFC60,0xFCC0,0xFD20,0xFD80,0xFDE0,0xFE40,0xFEA0,0xFF00,0xFF60,0xFFC0,0xFFE0,0xEFE0,0xE7E0,0xD7E0,0xCFE0,0xBFE0,0xB7E0,0xA7E0,0x9FE0,0x8FE0,0x87E0,0x77E0,0x6FE0,0x5FE0,0x57E0,0x47E0,0x3FE0,0x2FE0,0x27E0,0x17E0,0xFE0,0x7E0,0x7E1,0x7E3,0x7E4,0x7E6,0x7E7,0x7E9,0x7EA,0x7EC,0x7ED,0x7EF,0x7F0,0x7F2,0x7F3,0x7F5,0x7F6,0x7F8,0x7F9,0x7FB,0x7FC,0x7FE,0x7FF,0x79F,0x73F,0x6DF,0x67F,0x61F,0x5BF,0x55F,0x4FF,0x49F,0x43F,0x3DF,0x37F,0x31F,0x2BF,0x25F,0x1FF,0x19F,0x13F,0xDF,0x7F,0x1F,0x81F,0x101F,0x201F,0x281F,0x381F,0x401F,0x501F,0x581F,0x681F,0x701F,0x801F,0x881F,0x981F,0xA01F,0xB01F,0xB81F,0xC81F,0xD01F,0xE01F,0xE81F,0xF81F,0xF81F,0xF81D,0xF81C,0xF81A,0xF819,0xF817,0xF816,0xF814,0xF813,0xF811,0xF810,0xF80E,0xF80D,0xF80B,0xF80A,0xF808,0xF807,0xF805,0xF804,0xF802,0xF801,
+                                 0xF800,0xF840,0xF8A0,0xF900,0xF960,0xF9C0,0xFA20,0xFA80,0xFAE0,0xFB40,0xFBA0,0xFC00,0xFC60,0xFCC0,0xFD20,0xFD80,0xFDE0,0xFE40,0xFEA0,0xFF00,0xFF60,0xFFC0,0xFFE0,0xEFE0,0xE7E0,0xD7E0,0xCFE0,0xBFE0,0xB7E0,0xA7E0,0x9FE0,0x8FE0,0x87E0,0x77E0,0x6FE0,0x5FE0,0x57E0,0x47E0,0x3FE0,0x2FE0,0x27E0,0x17E0,0xFE0,0x7E0,0x7E1,0x7E3,0x7E4,0x7E6,0x7E7,0x7E9,0x7EA,0x7EC,0x7ED,0x7EF,0x7F0,0x7F2,0x7F3,0x7F5,0x7F6,0x7F8,0x7F9,0x7FB,0x7FC,0x7FE,0x7FF,0x79F,0x73F,0x6DF,0x67F,0x61F,0x5BF,0x55F,0x4FF,0x49F,0x43F,0x3DF,0x37F,0x31F,0x2BF,0x25F,0x1FF,0x19F,0x13F,0xDF,0x7F,0x1F,0x81F,0x101F,0x201F,0x281F,0x381F,0x401F,0x501F,0x581F,0x681F,0x701F,0x801F,0x881F,0x981F,0xA01F,0xB01F,0xB81F,0xC81F,0xD01F,0xE01F,0xE81F,0xF81F,0xF81F,0xF81D,0xF81C,0xF81A,0xF819,0xF817,0xF816,0xF814,0xF813,0xF811,0xF810,0xF80E,0xF80D,0xF80B,0xF80A,0xF808,0xF807,0xF805,0xF804,0xF802,0xF801};
+uint16_t img[SCR_WD];
+unsigned long DrawImageTest()
+{
+  for(int i=0;i<SCR_WD;i++) img[i] = tft.rgbWheel(256+i*511/SCR_WD);
+  unsigned long start = millis();
+  for(int i=0;i<5*4;i++) {
+    for(int y=0;y<SCR_HT;y++) tft.drawImage(0,y,SCR_WD,1,img);
+  }
+  return millis()-start;
+}
+// ------------------------------------------------ 
+unsigned long DrawImageFTest()
+{
+  unsigned long start = millis();
+  for(int i=0;i<5*4;i++) {
+    for(int y=0;y<SCR_HT;y++) tft.drawImageF(0,y,SCR_WD,1,imgF);
+  }
+  return millis()-start;
+}
+// ------------------------------------------------ 
 unsigned long orig[14]={ 1443,1443,361212,51728,473844,33872,24608,
                          440804,134556,203012,110552,266208,86616,457856 };
 
@@ -97,12 +118,20 @@ void setup(void)
 
   res[0]=FillScreenTest();
   Serial.print(F("FillScreen Mbps          "));
-  Serial.println(String(res[0])+"ms  "+String(1000*20.0/res[0])+"fps  "+String(128.0*160*16*20.0/res[0]/1000.0)+" Mbps\t"+100*orig[0]/res[0]+"%");
+  Serial.println(String(res[0])+"ms  "+String(1000*20.0/res[0])+"fps  "+String(20.0*SCR_WD*SCR_HT*16/res[0]/1000.0)+" Mbps\t"+100*orig[0]/res[0]+"%");
 
   res[1]=ClearScreenTest();
   Serial.print(F("ClearScreen Mbps         "));
-  Serial.println(String(res[1])+"ms  "+String(1000*20.0/res[1])+"fps  "+String(128.0*160*16*20.0/res[1]/1000.0)+" Mbps\t"+100*orig[1]/res[1]+"%");
+  Serial.println(String(res[1])+"ms  "+String(1000*20.0/res[1])+"fps  "+String(20.0*SCR_WD*SCR_HT*16/res[1]/1000.0)+" Mbps\t"+100*orig[1]/res[1]+"%");
 
+  res[1]=DrawImageTest();
+  Serial.print(F("DrawImage Mbps           "));
+  Serial.println(String(res[1])+"ms  "+String(1000*20.0/res[1])+"fps  "+String(20.0*SCR_WD*SCR_HT*16/res[1]/1000.0)+" Mbps\t"+100*orig[1]/res[1]+"%"); 
+
+  res[1]=DrawImageFTest();
+  Serial.print(F("DrawImageF Mbps          "));
+  Serial.println(String(res[1])+"ms  "+String(1000*20.0/res[1])+"fps  "+String(20.0*SCR_WD*SCR_HT*16/res[1]/1000.0)+" Mbps\t"+100*orig[1]/res[1]+"%"); 
+  
   res[2]=testFillScreen();
   Serial.print(F("Screen fill              "));
   result(2);
@@ -176,11 +205,13 @@ void setup(void)
   tft.setTextColor(GREEN);
   tft.println(F("Benchmark    Time/us"));
   tft.setTextColor(c1); tft.print(F("FillScr Mbps  "));
-  //tft.setTextColor(c2); tft.print(String(res[0])+"ms "+String(128.0*128*16*20.0/res[0]/1000.0)+" Mbps");
-  tft.setTextColor(c2); tft.println(String(128.0*160*16*20.0/res[0]/1000.0));
-  tft.setTextColor(c1); tft.print(F("ClrScr  Mbps  "));
-  //tft.setTextColor(c2); tft.print(String(res[1])+"ms "+String(128.0*128*16*20.0/res[1]/1000.0)+" Mbps");
-  tft.setTextColor(c2); tft.println(String(128.0*160*16*20.0/res[1]/1000.0));
+  //tft.setTextColor(c2); tft.print(String(res[0])+"ms "+String(20.0*SCR_WD*SCR_HT*16/res[0]/1000.0)+" Mbps");
+  tft.setTextColor(c2); tft.println(String(20.0*SCR_WD*SCR_HT*16/res[0]/1000.0));
+  //tft.setTextColor(c1); tft.print(F("ClrScr  Mbps  "));
+  ///tft.setTextColor(c2); tft.print(String(res[1])+"ms "+String(20.0*SCR_WD*SCR_HT*16/res[1]/1000.0)+" Mbps");
+  //tft.setTextColor(c2); tft.println(String(20.0*SCR_WD*SCR_HT*16/res[1]/1000.0));
+  tft.setTextColor(c1); tft.print(F("DrwImgF Mbps  "));
+  tft.setTextColor(c2); tft.println(String(20.0*SCR_WD*SCR_HT*16/res[1]/1000.0));
   tft.setTextColor(c1); tft.print(F("Screen fill   "));
   tft.setTextColor(c2); tft.println(res[2]);
   tft.setTextColor(c1); tft.print(F("Text          "));
@@ -246,6 +277,8 @@ Rounded rects (outline)  46180        187%
 Rounded rects (filled)   296400       154%
 Done!
 
+DrawImage Mbps           1146ms  17.45fps  5.72 Mbps
+DrawImageF Mbps          1342ms  14.90fps  4.88 Mbps
 
 */
 
