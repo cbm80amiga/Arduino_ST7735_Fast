@@ -43,7 +43,7 @@ Rcmd1[] = {                       // 7735R init, part 1 (red or green tab)
   0x0E,
   ST7735_INVOFF,  0,              // 13: Don't invert display, no args
   ST7735_MADCTL,  1,              // 14: Mem access ctl (directions), 1 arg:
-  0xC8,                         //     row/col addr, bottom-top refresh
+  (ST7735_MADCTL_MX | ST7735_MADCTL_MY | ST7735_MADCTL_BGR),                         //     row/col addr, bottom-top refresh
   ST7735_COLMOD,  1,              // 15: set color mode, 1 arg, no delay:
   0x05 },
       
@@ -124,11 +124,16 @@ inline void Arduino_ST7735::writeSPI(uint8_t c)
 }
 
 // ----------------------------------------------------------
-Arduino_ST7735::Arduino_ST7735(int8_t dc, int8_t rst, int8_t cs) : Adafruit_GFX(ST7735_TFTWIDTH, ST7735_TFTHEIGHT) 
+Arduino_ST7735::Arduino_ST7735(int8_t dc, int8_t rst, int8_t cs, int8_t colourMode) : Adafruit_GFX(ST7735_TFTWIDTH, ST7735_TFTHEIGHT) 
 {
   csPin = cs;
   dcPin = dc;
   rstPin = rst;
+  if(colourMode == ST7735_MADCTL_RGB || colourMode == ST7735_MADCTL_BGR){
+    _colourMode = colourMode;
+  }else{
+    _colourMode = ST7735_MADCTL_RGB;
+  }
 }
 
 // ----------------------------------------------------------
@@ -232,28 +237,28 @@ void Arduino_ST7735::setRotation(uint8_t m)
   rotation = m & 3;
   switch (rotation) {
    case 0:
-     writeData(ST7735_MADCTL_MX | ST7735_MADCTL_MY | ST7735_MADCTL_RGB);
+     writeData(ST7735_MADCTL_MX | ST7735_MADCTL_MY | _colourMode);
      _xstart = _colstart;
      _ystart = _rowstart;
      _height = ST7735_TFTHEIGHT;
      _width  = ST7735_TFTWIDTH;
      break;
    case 1:
-     writeData(ST7735_MADCTL_MY | ST7735_MADCTL_MV | ST7735_MADCTL_RGB);
+     writeData(ST7735_MADCTL_MY | ST7735_MADCTL_MV | _colourMode);
      _ystart = _colstart;
      _xstart = _rowstart;
      _width  = ST7735_TFTHEIGHT;
      _height = ST7735_TFTWIDTH;
      break;
   case 2:
-     writeData(ST7735_MADCTL_RGB);
+     writeData(_colourMode);
      _xstart = _colstart;
      _ystart = _rowstart;
      _height = ST7735_TFTHEIGHT;
      _width  = ST7735_TFTWIDTH;
      break;
    case 3:
-     writeData(ST7735_MADCTL_MX | ST7735_MADCTL_MV | ST7735_MADCTL_RGB);
+     writeData(ST7735_MADCTL_MX | ST7735_MADCTL_MV | _colourMode);
      _ystart = _colstart;
      _xstart = _rowstart;
      _width  = ST7735_TFTHEIGHT;
