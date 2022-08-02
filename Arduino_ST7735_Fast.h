@@ -34,7 +34,6 @@
 #define ST7735_TFTHEIGHT 	160
 
 // Some register settings
-#define ST7735_MADCTL_BGR 0x08
 #define ST7735_MADCTL_MH  0x04
 
 #define ST7735_FRMCTR1    0xB1
@@ -99,7 +98,7 @@
 #define ST7735_MADCTL_MV  0x20
 #define ST7735_MADCTL_ML  0x10
 #define ST7735_MADCTL_RGB 0x00
-
+#define ST7735_MADCTL_BGR 0x08
 
 // Color definitions
 #define	BLACK   0x0000
@@ -116,8 +115,7 @@
 class Arduino_ST7735 : public Adafruit_GFX {
 
  public:
-  Arduino_ST7735(int8_t DC, int8_t RST, int8_t CS = -1);
-
+  Arduino_ST7735(int8_t DC, int8_t RST, int8_t CS = -1, int8_t colourMode = 0);
   void init();
   void begin() { init(); }
   void setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
@@ -158,7 +156,7 @@ class Arduino_ST7735 : public Adafruit_GFX {
   void writeData(uint8_t d);
 
  private:
-  int8_t  csPin, dcPin, rstPin;
+  int8_t  csPin, dcPin, rstPin, _colourMode;
   uint8_t  csMask, dcMask;
   volatile uint8_t  *csPort, *dcPort;
 
